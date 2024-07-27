@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Play } from 'lucide-react';
 
 const GRID_SIZE = 12;
@@ -67,9 +67,6 @@ const MountainRescueGame = () => {
   const [snowPlowed, setSnowPlowed] = useState(0);
   const [totalSnow, setTotalSnow] = useState(0);
 
-  const gameTimerRef = useRef(null);
-  const snowTimerRef = useRef(null);
-
   const initializeGrid = useCallback(() => {
     let climberCount = 0;
     let snowCount = 0;
@@ -97,7 +94,7 @@ const MountainRescueGame = () => {
 
   const addNewSnow = useCallback(() => {
     setGrid((prevGrid) => {
-      const newGrid = prevGrid.map(row => row.map(cell => ({ ...cell })));
+      const newGrid = [...prevGrid];
       const emptyCells = [];
       for (let y = 0; y < GRID_SIZE; y++) {
         for (let x = 0; x < GRID_SIZE; x++) {
@@ -124,10 +121,10 @@ const MountainRescueGame = () => {
 
   useEffect(() => {
     if (gameActive && gameStarted) {
-      gameTimerRef.current = setInterval(() => {
+      const timer = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1 || checkGameOver()) {
-            clearInterval(gameTimerRef.current);
+            clearInterval(timer);
             setGameActive(false);
             return 0;
           }
@@ -148,30 +145,14 @@ const MountainRescueGame = () => {
         });
       }, 1000);
 
-      snowTimerRef.current = setInterval(addNewSnow, SNOW_FALL_INTERVAL);
+      const snowTimer = setInterval(addNewSnow, SNOW_FALL_INTERVAL);
 
       return () => {
-        clearInterval(gameTimerRef.current);
-        clearInterval(snowTimerRef.current);
+        clearInterval(timer);
+        clearInterval(snowTimer);
       };
     }
   }, [gameActive, gameStarted, addNewSnow, checkGameOver]);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!gameActive || !gameStarted) return;
-      switch (e.key) {
-        case 'ArrowUp': movePlayer(0, -1); break;
-        case 'ArrowDown': movePlayer(0, 1); break;
-        case 'ArrowLeft': movePlayer(-1, 0); break;
-        case 'ArrowRight': movePlayer(1, 0); break;
-        default: break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameActive, gameStarted]);
 
   const movePlayer = (dx, dy) => {
     if (!gameActive || !gameStarted) return;
@@ -191,7 +172,7 @@ const MountainRescueGame = () => {
     }
 
     setPlayerPosition({ x: newX, y: newY });
-    const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
+    const newGrid = [...grid];
 
     if (currentCell.content !== 'climber') {
       newGrid[playerPosition.y][playerPosition.x] = { content: null };
@@ -217,6 +198,17 @@ const MountainRescueGame = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (!gameActive || !gameStarted) return;
+    switch (e.key) {
+      case 'ArrowUp': movePlayer(0, -1); break;
+      case 'ArrowDown': movePlayer(0, 1); break;
+      case 'ArrowLeft': movePlayer(-1, 0); break;
+      case 'ArrowRight': movePlayer(1, 0); break;
+      default: break;
+    }
+  };
+
   const changeRole = (newRole) => {
     setCurrentRole(newRole);
   };
@@ -229,7 +221,7 @@ const MountainRescueGame = () => {
   const averageRescuedHealth = rescuedClimbers > 0 ? (totalRescuedHealth / rescuedClimbers).toFixed(2) : 0;
 
   return (
-    <div className="flex flex-col items-center p-8 bg-gradient-to-br from-blue-200 to-purple-200 min-h-screen font-sans" tabIndex="0">
+    <div className="flex flex-col items-center p-8 bg-gradient-to-br from-blue-200 to-purple-200 min-h-screen font-sans" onKeyDown={handleKeyDown} tabIndex="0">
       <h1 className="text-4xl font-bold mb-8 text-blue-800">Mountain Rescue</h1>
       <div className="flex gap-8">
         <div className="grid grid-cols-12 gap-1 p-4 bg-white rounded-xl shadow-lg">
@@ -254,11 +246,11 @@ const MountainRescueGame = () => {
             </div>
           </div>
           <div className="flex justify-between gap-2">
-            <div className="flex-1 bg-white p-4 rounded-lg shadow-lg text-center">
+            <div className="flex-1 bg-white p-4 rounded-xl shadow-lg text-center">
               <p className="text-sm font-bold text-blue-800">Score</p>
               <p className="text-2xl font-bold text-blue-600">{score}</p>
             </div>
-            <div className="flex-1 bg-white p-4 rounded-lg shadow-lg text-center">
+            <div className="flex-1 bg-white p-4 rounded-xl shadow-lg text-center">
               <p className="text-sm font-bold text-blue-800">Time</p>
               <p className="text-2xl font-bold text-blue-600">
                 {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}

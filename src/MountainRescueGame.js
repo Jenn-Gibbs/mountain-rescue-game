@@ -5,7 +5,7 @@ const GRID_SIZE = 12;
 const CLIMBER_PROBABILITY = 0.08;
 const ROCK_PROBABILITY = 0.05;
 const GAME_DURATION = 120;
-const CLIMBER_HEALTH_DEPLETION_RATE = 1;
+const CLIMBER_HEALTH_DEPLETION_RATE = 2; // Adjust this value to make health decrease more rapidly
 const SNOW_FALL_INTERVAL = 2000;
 
 const ROLE_EMOJIS = {
@@ -246,11 +246,11 @@ const MountainRescueGame = () => {
             </div>
           </div>
           <div className="flex justify-between gap-2">
-            <div className="flex-1 bg-white p-4 rounded-lg shadow-md text-center border border-gray-300">
+            <div className="flex-1 bg-white p-4 rounded-full shadow-lg text-center">
               <p className="text-sm font-bold text-blue-800">Score</p>
               <p className="text-2xl font-bold text-blue-600">{score}</p>
             </div>
-            <div className="flex-1 bg-white p-4 rounded-lg shadow-md text-center border border-gray-300">
+            <div className="flex-1 bg-white p-4 rounded-full shadow-lg text-center">
               <p className="text-sm font-bold text-blue-800">Time</p>
               <p className="text-2xl font-bold text-blue-600">
                 {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Play } from 'lucide-react';
 
 const GRID_SIZE = 12;
@@ -67,6 +67,9 @@ const MountainRescueGame = () => {
   const [snowPlowed, setSnowPlowed] = useState(0);
   const [totalSnow, setTotalSnow] = useState(0);
 
+  const gameTimerRef = useRef(null);
+  const snowTimerRef = useRef(null);
+
   const initializeGrid = useCallback(() => {
     let climberCount = 0;
     let snowCount = 0;
@@ -94,7 +97,7 @@ const MountainRescueGame = () => {
 
   const addNewSnow = useCallback(() => {
     setGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
+      const newGrid = prevGrid.map(row => row.map(cell => ({ ...cell })));
       const emptyCells = [];
       for (let y = 0; y < GRID_SIZE; y++) {
         for (let x = 0; x < GRID_SIZE; x++) {
@@ -121,10 +124,10 @@ const MountainRescueGame = () => {
 
   useEffect(() => {
     if (gameActive && gameStarted) {
-      const timer = setInterval(() => {
+      gameTimerRef.current = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1 || checkGameOver()) {
-            clearInterval(timer);
+            clearInterval(gameTimerRef.current);
             setGameActive(false);
             return 0;
           }
@@ -145,11 +148,11 @@ const MountainRescueGame = () => {
         });
       }, 1000);
 
-      const snowTimer = setInterval(addNewSnow, SNOW_FALL_INTERVAL);
+      snowTimerRef.current = setInterval(addNewSnow, SNOW_FALL_INTERVAL);
 
       return () => {
-        clearInterval(timer);
-        clearInterval(snowTimer);
+        clearInterval(gameTimerRef.current);
+        clearInterval(snowTimerRef.current);
       };
     }
   }, [gameActive, gameStarted, addNewSnow, checkGameOver]);
@@ -172,7 +175,7 @@ const MountainRescueGame = () => {
     }
 
     setPlayerPosition({ x: newX, y: newY });
-    const newGrid = [...grid];
+    const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
 
     if (currentCell.content !== 'climber') {
       newGrid[playerPosition.y][playerPosition.x] = { content: null };

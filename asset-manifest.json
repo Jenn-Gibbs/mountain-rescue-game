@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/mountain-rescue-game/static/css/main.c1d32b93.css",
-    "main.js": "/mountain-rescue-game/static/js/main.40af8819.js",
+    "main.css": "/mountain-rescue-game/static/css/main.c89d8f9c.css",
+    "main.js": "/mountain-rescue-game/static/js/main.631abc62.js",
     "index.html": "/mountain-rescue-game/index.html",
-    "main.c1d32b93.css.map": "/mountain-rescue-game/static/css/main.c1d32b93.css.map",
-    "main.40af8819.js.map": "/mountain-rescue-game/static/js/main.40af8819.js.map"
+    "main.c89d8f9c.css.map": "/mountain-rescue-game/static/css/main.c89d8f9c.css.map",
+    "main.631abc62.js.map": "/mountain-rescue-game/static/js/main.631abc62.js.map"
   },
   "entrypoints": [
-    "static/css/main.c1d32b93.css",
-    "static/js/main.40af8819.js"
+    "static/css/main.c89d8f9c.css",
+    "static/js/main.631abc62.js"
   ]
 }

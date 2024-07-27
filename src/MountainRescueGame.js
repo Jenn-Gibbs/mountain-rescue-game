@@ -283,4 +283,4 @@ const MountainRescueGame = () => {
   );
 };
 
-export default () => <MountainRescueGame />;
+export default MountainRescueGame;

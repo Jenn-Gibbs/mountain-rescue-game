@@ -157,6 +157,22 @@ const MountainRescueGame = () => {
     }
   }, [gameActive, gameStarted, addNewSnow, checkGameOver]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!gameActive || !gameStarted) return;
+      switch (e.key) {
+        case 'ArrowUp': movePlayer(0, -1); break;
+        case 'ArrowDown': movePlayer(0, 1); break;
+        case 'ArrowLeft': movePlayer(-1, 0); break;
+        case 'ArrowRight': movePlayer(1, 0); break;
+        default: break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [gameActive, gameStarted]);
+
   const movePlayer = (dx, dy) => {
     if (!gameActive || !gameStarted) return;
 
@@ -201,17 +217,6 @@ const MountainRescueGame = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (!gameActive || !gameStarted) return;
-    switch (e.key) {
-      case 'ArrowUp': movePlayer(0, -1); break;
-      case 'ArrowDown': movePlayer(0, 1); break;
-      case 'ArrowLeft': movePlayer(-1, 0); break;
-      case 'ArrowRight': movePlayer(1, 0); break;
-      default: break;
-    }
-  };
-
   const changeRole = (newRole) => {
     setCurrentRole(newRole);
   };
@@ -224,7 +229,7 @@ const MountainRescueGame = () => {
   const averageRescuedHealth = rescuedClimbers > 0 ? (totalRescuedHealth / rescuedClimbers).toFixed(2) : 0;
 
   return (
-    <div className="flex flex-col items-center p-8 bg-gradient-to-br from-blue-200 to-purple-200 min-h-screen font-sans" onKeyDown={handleKeyDown} tabIndex="0">
+    <div className="flex flex-col items-center p-8 bg-gradient-to-br from-blue-200 to-purple-200 min-h-screen font-sans" tabIndex="0">
       <h1 className="text-4xl font-bold mb-8 text-blue-800">Mountain Rescue</h1>
       <div className="flex gap-8">
         <div className="grid grid-cols-12 gap-1 p-4 bg-white rounded-xl shadow-lg">
